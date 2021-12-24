@@ -12,10 +12,9 @@ import {
   Float,
   ID,
 } from "type-graphql";
-import * as db from "../fake-database";
 import { Product } from "../entities/Product";
 import { Category } from "../entities/Category";
-import { getRepository } from "typeorm";
+import { getMongoRepository } from "typeorm";
 
 /**
  * Product Entity
@@ -24,18 +23,18 @@ import { getRepository } from "typeorm";
 @Resolver(() => Product)
 export class ProductResolver {
   /**
-   *
+   * Return the product category
    * @param product
    * @returns Category | undefined
    */
 
   @FieldResolver(() => Category)
-  category(@Root() product: Product): { id: string; name: string } | undefined {
-    return db.categories.find((category) => category.id === product.categoryId);
+  async category(@Root() product: Product): Promise<Category | undefined> {
+    return await Category.findOne(product.id);
   }
 
   /**
-   *
+   * Return all products
    * @returns Products[]
    */
 
@@ -45,7 +44,7 @@ export class ProductResolver {
   }
 
   /**
-   *
+   * Return one product identified by id
    * @param id: string
    * @returns Product | undefined | null
    */
@@ -58,7 +57,7 @@ export class ProductResolver {
   }
 
   /**
-   *
+   * Add a product into database
    * @param name: string
    * @param description: string
    * @param price: number
@@ -69,19 +68,23 @@ export class ProductResolver {
   async addProduct(
     @Arg("name") name: string,
     @Arg("description") description: string,
-    @Arg("price", () => Float) price: number
+    @Arg("brand") brand: string,
+    @Arg("price", () => Float) price: number,
+    @Arg("categoryId") categoryId: string
   ): Promise<Product> {
     const product = Product.create({
       name,
       description,
+      brand,
       price,
+      categoryId,
     });
 
     return await product.save();
   }
 
   /**
-   *
+   * Delete a product identified by id
    * @param id
    * @returns Product
    */
@@ -90,7 +93,7 @@ export class ProductResolver {
   async deleteProduct(
     @Arg("id", () => ID) id: string
   ): Promise<Product | undefined | null> {
-    const AllProducts = await getRepository(Product);
+    const AllProducts = await getMongoRepository(Product);
     const product = await AllProducts.findOne(id);
 
     if (product) {
@@ -101,6 +104,20 @@ export class ProductResolver {
     return null;
   }
 
+  /**
+   * Update a product into database identified by id
+   * @param id
+   * @param image
+   * @param name
+   * @param description
+   * @param rating
+   * @param brand
+   * @param price
+   * @param stock
+   * @param onSale
+   * @param categoryId
+   * @returns
+   */
   async updateProduct(
     @Arg("id", () => ID) id: string,
     @Arg("image") image: string,
@@ -126,7 +143,7 @@ export class ProductResolver {
       product.onSale = onSale;
       product.categoryId = categoryId;
 
-      await getRepository(Product).update(id, product);
+      await getMongoRepository(Product).update(id, product);
 
       return product;
     }

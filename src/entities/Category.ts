@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID } from "type-graphql";
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ObjectIdColumn } from "typeorm";
 import { Product } from "../entities/Product";
 
 @ObjectType()
 @Entity()
-export class Category {
+export class Category extends BaseEntity {
   @Field(() => ID)
   @ObjectIdColumn()
   id!: ObjectId;
@@ -18,3 +18,5 @@ export class Category {
   @Column()
   products!: Product[];
 }
+
+

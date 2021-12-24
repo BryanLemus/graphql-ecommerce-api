@@ -32,6 +32,9 @@ async function startServer(): Promise<void> {
     schema,
   });
 
+  /** Start apollo server */
+  await server.start();
+
   /** Apply express middleware */
   server.applyMiddleware({ app, path: "/graphql" });
 
