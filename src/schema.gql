@@ -10,14 +10,13 @@ type Category {
 }
 
 type Mutation {
-  addProduct(brand: String!, categoryId: String!, description: String!, name: String!, price: Float!): Product!
+  addProduct(brand: String!, description: String!, name: String!, price: Float!): Product!
   deleteProduct(id: ID!): Product
 }
 
 type Product {
   brand: String!
   category: Category!
-  categoryId: String!
   description: String!
   id: ID!
   image: String!
@@ -29,6 +28,8 @@ type Product {
 }
 
 type Query {
+  categories: [Category!]!
+  category(id: ID!): Category!
   product(id: ID!): Product
   products: [Product!]!
 }

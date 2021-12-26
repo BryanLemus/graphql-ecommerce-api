@@ -5,15 +5,12 @@
 import {
   Resolver,
   Query,
-  FieldResolver,
-  Root,
   Arg,
   Mutation,
   Float,
   ID,
 } from "type-graphql";
-import { Product } from "../entities/Product";
-import { Category } from "../entities/Category";
+import { Product } from "../entity/Product";
 import { getMongoRepository } from "typeorm";
 
 /**
@@ -22,17 +19,6 @@ import { getMongoRepository } from "typeorm";
 
 @Resolver(() => Product)
 export class ProductResolver {
-  /**
-   * Return the product category
-   * @param product
-   * @returns Category | undefined
-   */
-
-  @FieldResolver(() => Category)
-  async category(@Root() product: Product): Promise<Category | undefined> {
-    return await Category.findOne(product.id);
-  }
-
   /**
    * Return all products
    * @returns Products[]
@@ -70,14 +56,12 @@ export class ProductResolver {
     @Arg("description") description: string,
     @Arg("brand") brand: string,
     @Arg("price", () => Float) price: number,
-    @Arg("categoryId") categoryId: string
   ): Promise<Product> {
     const product = Product.create({
       name,
       description,
       brand,
       price,
-      categoryId,
     });
 
     return await product.save();
@@ -128,7 +112,6 @@ export class ProductResolver {
     @Arg("price", () => Float) price: number,
     @Arg("stock", () => Float) stock: number,
     @Arg("onSale") onSale: boolean,
-    @Arg("categoryId") categoryId: string
   ): Promise<Product | null> {
     let product = await Product.findOne(id);
 
@@ -141,7 +124,6 @@ export class ProductResolver {
       product.price = price;
       product.stock = stock;
       product.onSale = onSale;
-      product.categoryId = categoryId;
 
       await getMongoRepository(Product).update(id, product);
 

@@ -1,47 +1,47 @@
 import { ObjectType, Field, ID, Float } from "type-graphql";
-import { BaseEntity, Column, Entity, ObjectIdColumn } from "typeorm";
-import { ObjectId } from "mongodb";
+import { BaseEntity, Column, Entity, ObjectIdColumn, ObjectID } from "typeorm";
+import { Category } from "./Category";
 
 @ObjectType()
-@Entity()
+@Entity("Product")
 export class Product extends BaseEntity {
   @Field(() => ID)
   @ObjectIdColumn()
-  id!: ObjectId;
+  id: ObjectID;
 
   @Field()
   @Column()
-  image!: string;
+  image: string;
 
   @Field()
   @Column()
-  name!: string;
+  name: string;
 
   @Field()
   @Column()
-  description!: string;
+  description: string;
 
   @Field(() => Float)
   @Column()
-  rating!: number;
+  rating: number;
 
   @Field()
   @Column()
-  brand!: string;
+  brand: string;
 
   @Field(() => Float)
   @Column()
-  price!: number;
+  price: number;
 
   @Field()
   @Column()
-  stock!: number;
+  stock: number;
 
   @Field()
   @Column()
-  onSale!: boolean;
+  onSale: boolean;
 
-  @Field()
+  @Field(() => Category)
   @Column()
-  categoryId!: string;
+  category: Category;
 }

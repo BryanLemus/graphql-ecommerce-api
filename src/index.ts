@@ -7,6 +7,7 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { ProductResolver } from "./resolvers/ProductResolver";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { createConnection } from "typeorm";
 import path from "path";
 
@@ -20,7 +21,7 @@ async function startServer(): Promise<void> {
 
   /** Building schema */
   const schema = await buildSchema({
-    resolvers: [ProductResolver],
+    resolvers: [ProductResolver, CategoryResolver],
     emitSchemaFile: path.resolve(__dirname, "schema.gql"),
   });
 
