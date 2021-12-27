@@ -10,8 +10,9 @@ type Category {
 }
 
 type Mutation {
-  addProduct(brand: String!, description: String!, name: String!, price: Float!): Product!
+  addProduct(brand: String!, description: String!, image: String!, name: String!, onSale: Boolean!, price: Float!, rating: Float!, stock: Float!): Product!
   deleteProduct(id: ID!): Product
+  updateProduct(brand: String!, description: String!, id: ID!, image: String!, name: String!, onSale: Boolean!, price: Float!, rating: Float!, stock: Float!): Product!
 }
 
 type Product {
@@ -19,7 +20,7 @@ type Product {
   category: Category!
   description: String!
   id: ID!
-  image: String!
+  image: String
   name: String!
   onSale: Boolean!
   price: Float!

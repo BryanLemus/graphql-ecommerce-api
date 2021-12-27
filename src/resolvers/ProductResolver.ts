@@ -2,16 +2,9 @@
  * Import modules
  */
 
-import {
-  Resolver,
-  Query,
-  Arg,
-  Mutation,
-  Float,
-  ID,
-} from "type-graphql";
-import { Product } from "../entity/Product";
+import { Resolver, Query, Arg, Mutation, Float, ID } from "type-graphql";
 import { getMongoRepository } from "typeorm";
+import { Product } from "../entity/Product";
 
 /**
  * Product Entity
@@ -21,12 +14,12 @@ import { getMongoRepository } from "typeorm";
 export class ProductResolver {
   /**
    * Return all products
-   * @returns Products[]
+   * @returns Promise<Product>
    */
 
   @Query(() => [Product])
-  async products(): Promise<Product[]> {
-    return await Product.find();
+  products(): Promise<Product[]> {
+    return Product.find();
   }
 
   /**
@@ -35,7 +28,7 @@ export class ProductResolver {
    * @returns Product | undefined | null
    */
 
-  @Query(() => Product!, { nullable: true })
+  @Query(() => Product, { nullable: true })
   async product(
     @Arg("id", () => ID) id: string
   ): Promise<Product | undefined | null> {
@@ -50,18 +43,26 @@ export class ProductResolver {
    * @returns Product
    */
 
-  @Mutation(() => Product!)
+  @Mutation(() => Product)
   async addProduct(
     @Arg("name") name: string,
     @Arg("description") description: string,
+    @Arg("image") image: string,
     @Arg("brand") brand: string,
     @Arg("price", () => Float) price: number,
+    @Arg("rating", () => Float) rating: number,
+    @Arg("stock", () => Float) stock: number,
+    @Arg("onSale") onSale: boolean
   ): Promise<Product> {
     const product = Product.create({
       name,
+      image,
       description,
       brand,
       price,
+      rating,
+      stock,
+      onSale,
     });
 
     return await product.save();
@@ -73,7 +74,7 @@ export class ProductResolver {
    * @returns Product
    */
 
-  @Mutation(() => Product!, { nullable: true })
+  @Mutation(() => Product, { nullable: true })
   async deleteProduct(
     @Arg("id", () => ID) id: string
   ): Promise<Product | undefined | null> {
@@ -102,6 +103,8 @@ export class ProductResolver {
    * @param categoryId
    * @returns
    */
+
+  @Mutation(() => Product)
   async updateProduct(
     @Arg("id", () => ID) id: string,
     @Arg("image") image: string,
@@ -111,7 +114,7 @@ export class ProductResolver {
     @Arg("brand") brand: string,
     @Arg("price", () => Float) price: number,
     @Arg("stock", () => Float) stock: number,
-    @Arg("onSale") onSale: boolean,
+    @Arg("onSale") onSale: boolean
   ): Promise<Product | null> {
     let product = await Product.findOne(id);
 

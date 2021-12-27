@@ -9,7 +9,7 @@ export class Product extends BaseEntity {
   @ObjectIdColumn()
   id: ObjectID;
 
-  @Field()
+  @Field({nullable: true})
   @Column()
   image: string;
 
